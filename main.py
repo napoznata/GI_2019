@@ -6,13 +6,20 @@ import abc
 class AlgorithmWithIndexStructure(object):
 
     @abc.abstractmethod
-    def query(self, p):
+    def initWithText(self):
+        pass
+
+    @abc.abstractmethod
+    def query(self, text, pattern):
         pass
 
 
 class IndexSorted(AlgorithmWithIndexStructure):
 
-    def __init__(self, t, ln=5):
+    def initWithText(self):
+        pass
+
+    def __init__(self, t, ln):
         """ Create index, extracting substrings of length 'ln' """
         self.t = t
         self.ln = ln
@@ -21,7 +28,7 @@ class IndexSorted(AlgorithmWithIndexStructure):
             self.index.append((t[i:i + ln], i))  # add <substr, offset> pair
         self.index.sort()  # sort pairs
 
-    def query(self, p):
+    def query(self, text, p):
         """ Return candidate alignments for p """
         st = bisect.bisect_left(self.index, (p[:self.ln], -1))  # binary search
         en = bisect.bisect_right(self.index, (p[:self.ln], sys.maxsize))  # binary search
@@ -31,12 +38,14 @@ class IndexSorted(AlgorithmWithIndexStructure):
 
 class IndexHash(AlgorithmWithIndexStructure):
 
-    def __init__(self, t, ln, ival):
+    def initWithText(self):
+        pass
+
+    def __init__(self, t, ln):
         """ Create index, extracting substrings of length 'ln' """
         self.t = t
         self.ln = ln
         # What is ival for?
-        self.ival = ival
         self.index = {}
         for i in range(len(t) - ln + 1):
             substr = t[i:i + ln]
@@ -45,12 +54,15 @@ class IndexHash(AlgorithmWithIndexStructure):
             else:
                 self.index[substr] = [i]  # add to dictionary
 
-    def query(self, p):
+    def query(self, text, p):
         """ Return candidate alignments for p """
         return self.index.get(p[:self.ln], [])
 
 
 class SuffixTree(AlgorithmWithIndexStructure):
+    def initWithText(self):
+        pass
+
     class Node(object):
         def __init__(self, lab):
             self.lab = lab  # label on path leading to this node
@@ -137,11 +149,14 @@ class SuffixTree(AlgorithmWithIndexStructure):
             # finished at offset 'off' within an edge leading to 'node'
             return node.lab[off] == '$'
 
-    def query(self, p):
+    def query(self, text, p):
         pass
 
 
 class SuffixTrie(AlgorithmWithIndexStructure):
+
+    def initWithText(self):
+        pass
 
     def __init__(self, t):
         """ Make suffix trie from t """
@@ -173,11 +188,8 @@ class SuffixTrie(AlgorithmWithIndexStructure):
         node = self.followPath(s)
         return node is not None and '$' in node
 
-    def query(self, p):
+    def query(self, text, p):
         pass
 
-
-def findPatternInTextUsingAlgorithm(pattern, text, algorithm):
-    return 0
 
 
