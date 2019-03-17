@@ -2,7 +2,6 @@ import bisect
 import sys
 import abc
 
-
 class AlgorithmWithIndexStructure(object):
 
     @abc.abstractmethod
@@ -12,28 +11,6 @@ class AlgorithmWithIndexStructure(object):
     @abc.abstractmethod
     def query(self, text, pattern):
         pass
-
-
-class IndexSorted(AlgorithmWithIndexStructure):
-
-    def initWithText(self):
-        pass
-
-    def __init__(self, t, ln):
-        """ Create index, extracting substrings of length 'ln' """
-        self.t = t
-        self.ln = ln
-        self.index = []
-        for i in range(len(t) - ln + 1):
-            self.index.append((t[i:i + ln], i))  # add <substr, offset> pair
-        self.index.sort()  # sort pairs
-
-    def query(self, text, p):
-        """ Return candidate alignments for p """
-        st = bisect.bisect_left(self.index, (p[:self.ln], -1))  # binary search
-        en = bisect.bisect_right(self.index, (p[:self.ln], sys.maxsize))  # binary search
-        hits = self.index[st:en]  # this range of elements corresponds to the hits
-        return [h[1] for h in hits]  # return just the offsets
 
 
 class IndexHash(AlgorithmWithIndexStructure):
