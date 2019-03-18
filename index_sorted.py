@@ -13,6 +13,7 @@ class IndexSorted(AlgorithmWithIndexStructure):
         self.__index = []
 
     def initWithText(self):
+        self.__index = []
         for i in range(len(self.__text) - self.__pattern_len + 1):
             self.__index.append((self.__text[i:i + self.__pattern_len], i))  # add <substr, offset> pair
         self.__index.sort()  # sort pairs
