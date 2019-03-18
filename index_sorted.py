@@ -2,7 +2,7 @@ import bisect
 import sys
 
 from unit_test import *
-
+from main import AlgorithmWithIndexStructure
 
 class IndexSorted(AlgorithmWithIndexStructure):
 
