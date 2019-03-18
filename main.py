@@ -13,7 +13,8 @@ class AlgorithmWithIndexStructure(object):
         pass
 
 
-class IndexHash(AlgorithmWithIndexStructure):
+
+class IndexSorted(AlgorithmWithIndexStructure):
 
     def initWithText(self):
         pass
@@ -22,18 +23,17 @@ class IndexHash(AlgorithmWithIndexStructure):
         """ Create index, extracting substrings of length 'ln' """
         self.t = t
         self.ln = ln
-        # What is ival for?
-        self.index = {}
+        self.index = []
         for i in range(len(t) - ln + 1):
-            substr = t[i:i + ln]
-            if substr in self.index:
-                self.index[substr].append(i)  # substring already in dictionary
-            else:
-                self.index[substr] = [i]  # add to dictionary
+            self.index.append((t[i:i + ln], i))  # add <substr, offset> pair
+        self.index.sort()  # sort pairs
 
     def query(self, text, p):
         """ Return candidate alignments for p """
-        return self.index.get(p[:self.ln], [])
+        st = bisect.bisect_left(self.index, (p[:self.ln], -1))  # binary search
+        en = bisect.bisect_right(self.index, (p[:self.ln], sys.maxsize))  # binary search
+        hits = self.index[st:en]  # this range of elements corresponds to the hits
+        return [h[1] for h in hits]  # return just the offsets
 
 
 class SuffixTree(AlgorithmWithIndexStructure):
