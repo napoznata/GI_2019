@@ -2,7 +2,6 @@ import bisect
 import sys
 import abc
 
-
 class AlgorithmWithIndexStructure(object):
 
     @abc.abstractmethod
@@ -12,6 +11,7 @@ class AlgorithmWithIndexStructure(object):
     @abc.abstractmethod
     def query(self, text, pattern):
         pass
+
 
 
 class IndexSorted(AlgorithmWithIndexStructure):
