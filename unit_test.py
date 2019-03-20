@@ -38,7 +38,7 @@ def run_algorithm_tests(algorithm):
 
     for test_file_name in test_files:
 
-        test_file = open(test_file_name,'r')
+        test_file = open(test_file_name, 'r')
         lines = test_file.readlines()
 
         name = lines[0].rstrip('\n')
@@ -65,4 +65,3 @@ def run_algorithm_tests(algorithm):
 def print_test_results(results):
     for result in results:
         print(result.get_description())
-
