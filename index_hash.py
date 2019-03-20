@@ -18,6 +18,9 @@ class IndexHash(AlgorithmWithIndexStructure):
         self.__index = {}
 
     def query(self, text, pattern):
+        if len(pattern) == 0:
+            return []
+
         self.__text = text
         self.__pattern_len = len(pattern)
         self.__index = {}
