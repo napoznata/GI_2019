@@ -1,6 +1,5 @@
 import abc
 
-
 class AlgorithmWithIndexStructure(object):
 
     @abc.abstractmethod
