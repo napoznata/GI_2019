@@ -79,13 +79,16 @@ class SuffixTree(AlgorithmWithIndexStructure):
         return cur  # exhausted query string at internal node
 
     def query(self, text, pattern):
+        if len(pattern) == 0:
+            return []
+
         self.__text = text + '$'
         self.__root = self.Node(None)
 
         self.initWithText()
 
         node = self.followPath(pattern)
-        return node.getLeavesOffsets()
+        return node.getLeavesOffsets() if node is not None else []
 
 
 # Run tests

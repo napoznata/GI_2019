@@ -4,6 +4,7 @@ import sys
 from unit_test import *
 from main import AlgorithmWithIndexStructure
 
+
 class IndexSorted(AlgorithmWithIndexStructure):
 
     def __init__(self):
@@ -19,6 +20,8 @@ class IndexSorted(AlgorithmWithIndexStructure):
         self.__index.sort()  # sort pairs
 
     def query(self, text, pattern):
+        if len(pattern) == 0:
+            return []
 
         self.__text = text
         self.__pattern = pattern
