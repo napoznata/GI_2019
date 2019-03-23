@@ -44,13 +44,15 @@ def run_algorithm_tests(algorithm):
         name = lines[0].rstrip('\n')
         genome = lines[1].rstrip('\n')
 
+        algorithm.initWithText(genome)
+
         for pattern_line in lines[2:]:
             line_parts = pattern_line.rstrip('\n').split(':')
 
             pattern = line_parts[0]
             match_indexes = list(map(int, line_parts[1].split(','))) if len(line_parts[1]) > 0 else []
 
-            algorithm_result = algorithm.query(genome, pattern)
+            algorithm_result = algorithm.query(pattern)
 
             if match_indexes != algorithm_result:
                 result = UnitTestResult.FAILED
