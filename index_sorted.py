@@ -13,21 +13,21 @@ class IndexSorted(AlgorithmWithIndexStructure):
         self.__pattern_len = 0
         self.__index = []
 
-    def initWithText(self):
-        self.__index = []
-        for i in range(len(self.__text) - self.__pattern_len + 1):
-            self.__index.append((self.__text[i:i + self.__pattern_len], i))  # add <substr, offset> pair
-        self.__index.sort()  # sort pairs
+    def initWithText(self, text):
+        self.__text = text
 
-    def query(self, text, pattern):
+    def query(self, pattern):
         if len(pattern) == 0:
             return []
 
-        self.__text = text
         self.__pattern = pattern
         self.__pattern_len = len(self.__pattern)
 
-        self.initWithText()
+        self.__index = []
+
+        for i in range(len(self.__text) - self.__pattern_len + 1):
+            self.__index.append((self.__text[i:i + self.__pattern_len], i))  # add <substr, offset> pair
+        self.__index.sort()  # sort pairs
 
         st = bisect.bisect_left(self.__index, (self.__pattern[:self.__pattern_len], -1))  # binary search
         en = bisect.bisect_right(self.__index, (self.__pattern[:self.__pattern_len], sys.maxsize))  # binary search
