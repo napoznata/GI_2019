@@ -13,7 +13,8 @@ class UnitTestResult(object):
     __result_str[PASSED] = "Passed"
     __result_str[FAILED] = "Failed"
 
-    def __init__(self, result, name):
+    def __init__(self, result, name, message):
+        self.__message = message
         self.__result = result
         self.__name = name
 
@@ -24,7 +25,7 @@ class UnitTestResult(object):
         return self.__result
 
     def get_description(self):
-        return self.__name + ": " + self.__result_str[self.__result]
+        return self.__name + ": " + self.__result_str[self.__result] + self.__message
 
 
 def run_algorithm_tests(algorithm):
@@ -54,12 +55,16 @@ def run_algorithm_tests(algorithm):
 
             algorithm_result = algorithm.query(pattern)
 
+            message = ""
+
             if match_indexes != algorithm_result:
                 result = UnitTestResult.FAILED
+                message = ' (pattern: \"' + pattern + '\", missed indexes: '\
+                          + str(list(set(algorithm_result) - set(match_indexes))) + ")"
             else:
                 result = UnitTestResult.PASSED
 
-            results.append(UnitTestResult(result, name))
+            results.append(UnitTestResult(result, name, message))
 
     return results
 
