@@ -22,7 +22,9 @@ class SuffixTree(AlgorithmWithIndexStructure):
         self.__root = self.Node(None)
         self.__text = ""
 
-    def initWithText(self):
+    def initWithText(self, text):
+        self.__text = text + '$'
+        self.__root = self.Node(None)
         self.__root.out[self.__text[0]] = self.Node(self.__text, 0)  # trie for just longest suf
         # add the rest of the suffixes, from longest to shortest
         for i in range(1, len(self.__text)):
@@ -78,14 +80,9 @@ class SuffixTree(AlgorithmWithIndexStructure):
                 return None  # fell off in the middle of the edge
         return cur  # exhausted query string at internal node
 
-    def query(self, text, pattern):
+    def query(self, pattern):
         if len(pattern) == 0:
             return []
-
-        self.__text = text + '$'
-        self.__root = self.Node(None)
-
-        self.initWithText()
 
         node = self.followPath(pattern)
         return node.getLeavesOffsets() if node is not None else []

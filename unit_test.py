@@ -59,8 +59,8 @@ def run_algorithm_tests(algorithm):
 
             if match_indexes != algorithm_result:
                 result = UnitTestResult.FAILED
-                message = ' (pattern: \"' + pattern + '\", missed indexes: '\
-                          + str(list(set(algorithm_result) - set(match_indexes))) + ")"
+                message = ' (pattern: \"' + pattern + '\", missed indexes: ' \
+                          + str(sorted(list(set(match_indexes).symmetric_difference(algorithm_result)))) + ")"
             else:
                 result = UnitTestResult.PASSED
 
