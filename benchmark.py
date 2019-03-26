@@ -29,6 +29,14 @@ class BenchmarkResult(object):
     def get_max_memory_usage(self):
         return self.__max_memory
 
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return self.__algorithm_name + " benchmark results: \n" \
+               "\tMax memory (bytes): " + str(self.__max_memory) + "\n" + \
+               "\tExecution time: " + str(self.__time)
+
 
 class MemoryMonitor(threading.Thread):
 
@@ -58,15 +66,26 @@ class MemoryMonitor(threading.Thread):
         return "MonitorThread #" + threading.Thread.getName(self)
 
 
-def benchmark_run(title, algorithm, text, pattern, iterations=1, memory_monitor_resolution=0.01):
+class DummyAlgorithm(AlgorithmWithIndexStructure):
 
-    mem_monitor = MemoryMonitor(memory_monitor_resolution)
+    def initWithText(self, text):
+        time.sleep(2)
 
+    def query(self, pattern):
+        bytearray(512000000)
+        time.sleep(1)
+
+
+def benchmark_run(algorithm, text, pattern, title, iterations=1, memory_monitor_resolution=0.01):
+    print("Running benchmark tests for " + title)
     max_memory_all = 0
     max_time = 0
 
     for i in range(iterations):
 
+        print("Iteration " + str(i+1) + "...")
+
+        mem_monitor = MemoryMonitor(memory_monitor_resolution)
         mem_monitor.start_monitoring()
         time_start = time.time()
 
@@ -79,7 +98,14 @@ def benchmark_run(title, algorithm, text, pattern, iterations=1, memory_monitor_
         time_total = time_end - time_start
 
         max_memory_all = max(max_memory_all, max_memory_current)
-        max_time = max(max_time,time_total)
+        max_time = max(max_time, time_total)
+
+        print("\tMemory used: " + str(max_memory_current) + "\n" + "\tExecution time: " + str(time_total))
 
     return BenchmarkResult(title, text, pattern, max_time, max_memory_all)
 
+
+# Unit test for benchmark system
+dummy_algorithm = DummyAlgorithm()
+results = benchmark_run(dummy_algorithm, "", "", "DummyAlgorithm", 5)
+print("\n\n" + str(results))
