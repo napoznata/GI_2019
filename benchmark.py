@@ -3,7 +3,8 @@ import time
 import threading
 import psutil
 import os
-
+import copy
+import gc
 
 class BenchmarkResult(object):
 
@@ -61,6 +62,7 @@ class MemoryMonitor(threading.Thread):
         self.__process = psutil.Process(os.getpid())
 
     def run(self):
+        gc.collect()
         initial_memory_usage = self.__process.memory_info().rss
 
         while self.__thread_running.isSet():
@@ -82,12 +84,19 @@ class MemoryMonitor(threading.Thread):
 
 class DummyAlgorithm(AlgorithmWithIndexStructure):
 
+    @staticmethod
+    def __allocate_memory(size):
+        x = bytearray(size//2)
+        y = copy.deepcopy(x)
+        del x
+        return y
+
     def initWithText(self, text):
-        bytearray(16000000)
+        self.__allocate_memory(512000000)
         time.sleep(3)
 
     def query(self, pattern):
-        bytearray(32000000)
+        self.__allocate_memory(256000000)
         time.sleep(1)
 
 
@@ -95,47 +104,44 @@ def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor
 
     print("Running benchmark tests for " + title)
 
-    print("\nBuilding index structure...")
-    total_query_time = 0
-    mem_monitor_init = MemoryMonitor(memory_monitor_resolution)
+    max_init_time = 0
+    max_total_query_time = 0
+    max_memory_all = 0
 
-    mem_monitor_init.start_monitoring()
-    init_time_start = time.time()
+    for i in range(iterations):
 
-    algorithm.initWithText(text)
+        print("\n---------- Test iteration " + str(i+1) + " ----------")
+        alg_object = copy.deepcopy(algorithm)
 
-    total_init_time = time.time() - init_time_start
-    max_memory_all = mem_monitor_init.finish_monitoring()
+        print("Building index structure...")
 
-    print("Execution time: \t\t" + str(total_init_time))
-    print("Used memory: \t\t\t" + str(max_memory_all))
+        mem_monitor = MemoryMonitor(memory_monitor_resolution)
+        mem_monitor.start_monitoring()
 
-    for pattern in patterns:
+        init_time_start = time.time()
+        alg_object.initWithText(text)
+        init_time = time.time() - init_time_start
 
-        print("\nQuery pattern \"" + pattern + "\"", end='')
-        max_time_pattern = 0
-        memory_current_pattern = 0
+        max_init_time = max(max_init_time, init_time)
 
-        for i in range(iterations):
+        total_query_time = 0
 
-            print(".", end='')
-            mem_monitor_pattern = MemoryMonitor(memory_monitor_resolution)
+        for pattern in patterns:
 
-            mem_monitor_pattern.start_monitoring()
+            print("Query pattern \"" + pattern + "\"...")
+
             time_start = time.time()
-
-            algorithm.query(pattern)
-
+            alg_object.query(pattern)
             time_pattern = time.time() - time_start
-            memory_current_pattern = mem_monitor_pattern.finish_monitoring()
 
-            max_memory_all = max(max_memory_all, memory_current_pattern)
-            max_time_pattern = max(max_time_pattern, time_pattern)
+            total_query_time += time_pattern
 
-        total_query_time += max_time_pattern
-        print("\nMax memory used: \t\t" + str(memory_current_pattern) + "\n" + "Max execution time: \t" + str(max_time_pattern))
+        max_total_query_time = max(max_total_query_time, total_query_time)
+        max_memory_all = max(max_memory_all, mem_monitor.finish_monitoring())
 
-    return BenchmarkResult(title, text, patterns, total_init_time, total_query_time, max_memory_all)
+        del alg_object
+
+    return BenchmarkResult(title, text, patterns, max_init_time, max_total_query_time, max_memory_all)
 
 
 # Unit test for benchmark_run function
@@ -144,8 +150,8 @@ def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor
 dummy_algorithm = DummyAlgorithm()
 
 # Simulate initial memory usage
-bytearray(64000000)
+bytearray(64000)
 
-results = benchmark_run(dummy_algorithm, "ACCTCGATCCGATCG", ["ATTG", "CCA"], "DummyAlgorithm", 1)
+results = benchmark_run(dummy_algorithm, "ACCTCGATCCGATCG", ["ATTG", "CCA"], "DummyAlgorithm", 5)
 
 print("\n" + str(results))
