@@ -1,14 +1,16 @@
-from unit_test import *
-from main import AlgorithmWithIndexStructure
+from algorithm import AlgorithmWithIndexStructure
 
 
 class SuffixArray(AlgorithmWithIndexStructure):
+
+    def get_name(self):
+        return "SuffixArray"
 
     def __init__(self):
         self.__suffix_array = []
         self.__text = ""
 
-    def initWithText(self, text):
+    def init_with_text(self, text):
         self.__text = text
 
         # Suffix array is a list of tuples
@@ -59,8 +61,3 @@ class SuffixArray(AlgorithmWithIndexStructure):
                     index_up += 1
 
         return sorted(result_list)
-
-
-# Run tests
-test_results = run_algorithm_tests(SuffixArray())
-print_test_results(test_results)

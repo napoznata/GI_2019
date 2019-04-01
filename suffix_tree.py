@@ -1,8 +1,10 @@
-from main import AlgorithmWithIndexStructure
-from unit_test import *
+from algorithm import AlgorithmWithIndexStructure
 
 
 class SuffixTree(AlgorithmWithIndexStructure):
+
+    def get_name(self):
+        return "SuffixTree"
 
     class Node(object):
         def __init__(self, lab, offset=-1):
@@ -22,7 +24,7 @@ class SuffixTree(AlgorithmWithIndexStructure):
         self.__root = self.Node(None)
         self.__text = ""
 
-    def initWithText(self, text):
+    def init_with_text(self, text):
         self.__text = text + '$'
         self.__root = self.Node(None)
         self.__root.out[self.__text[0]] = self.Node(self.__text, 0)  # trie for just longest suf
@@ -86,8 +88,3 @@ class SuffixTree(AlgorithmWithIndexStructure):
 
         node = self.followPath(pattern)
         return node.getLeavesOffsets() if node is not None else []
-
-
-# Run tests
-test_results = run_algorithm_tests(SuffixTree())
-print_test_results(test_results)
