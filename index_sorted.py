@@ -38,7 +38,7 @@ class IndexSorted(AlgorithmWithIndexStructure):
 
                 mid = low + (high - low) // 2  # Integer division
 
-                if substring in self.__index[mid][0]:
+                if self.__index[mid][0].startswith(substring):
                     found_at = mid + self.__index[mid][0].index(substring)
                     break
                 elif substring > self.__index[mid][0]:
