@@ -5,17 +5,18 @@ import psutil
 import os
 import copy
 import gc
+import sys
 
 
 class BenchmarkResult(object):
 
-    def __init__(self, algorithm_name, text, pattern_set, init_time, patterns_query_time, max_memory, query_results):
+    def __init__(self, algorithm_name, text, pattern_set, init_time, patterns_query_time, used_memory, query_results):
         self.__algorithm_name = algorithm_name
         self.__text = text
         self.__pattern_set = pattern_set
         self.__init_time = init_time
         self.__patterns_query_time = patterns_query_time
-        self.__max_memory = max_memory
+        self.__used_memory = used_memory
         self.__query_results = query_results
 
     def get_algorithm_name(self):
@@ -36,8 +37,8 @@ class BenchmarkResult(object):
     def get_init_time(self):
         return self.__init_time
 
-    def get_max_memory_usage(self):
-        return self.__max_memory
+    def get_memory_usage(self):
+        return self.__used_memory
 
     def get_query_results(self):
         return self.__query_results
@@ -48,7 +49,7 @@ class BenchmarkResult(object):
     def __str__(self):
         return "--------------------------------------------------------------"\
                "\n" + self.__algorithm_name + " benchmark results \n\n" \
-               "Max memory (bytes): \t" + str(self.__max_memory) + "\n" + \
+               "Used memory (bytes): \t" + str(self.__used_memory) + "\n" + \
                "Text init time: \t\t" + str(self.__init_time) + "\n" + \
                "Total query time: \t\t" + str(self.__patterns_query_time) + "\n" \
                "Total execution time: \t" + str(self.get_total_execution_time()) + "\n" \
@@ -113,9 +114,9 @@ def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor
 
     print("Running benchmark tests for " + title)
 
-    max_init_time = 0
-    max_total_query_time = 0
-    max_memory_all = 0
+    min_init_time = sys.maxsize + 1
+    min_total_query_time = sys.maxsize + 1
+    min_memory_all = sys.maxsize + 1
     query_results = {}
 
     for i in range(iterations):
@@ -132,7 +133,7 @@ def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor
         alg_object.init_with_text(text)
         init_time = time.time() - init_time_start
 
-        max_init_time = max(max_init_time, init_time)
+        min_init_time = min(min_init_time, init_time)
 
         total_query_time = 0
 
@@ -149,12 +150,12 @@ def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor
             if i == 0:
                 query_results[pattern] = result
 
-        max_total_query_time = max(max_total_query_time, total_query_time)
-        max_memory_all = max(max_memory_all, mem_monitor.finish_monitoring())
+        min_total_query_time = min(min_total_query_time, total_query_time)
+        min_memory_all = min(min_memory_all, mem_monitor.finish_monitoring())
 
         del alg_object
 
-    return BenchmarkResult(title, text, patterns, max_init_time, max_total_query_time, max_memory_all, query_results)
+    return BenchmarkResult(title, text, patterns, min_init_time, min_total_query_time, min_memory_all, query_results)
 
 
 # Unit test for benchmark_run function
