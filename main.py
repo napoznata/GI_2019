@@ -33,4 +33,4 @@ for test_file_name in test_files:
     for algorithm in algorithms:
         test_results_file_path = tests_results_dir / (algorithm.get_name() + str(index) + ".txt")
         test_results_file = open(test_results_file_path, "w+")
-        test_results_file.write(benchmark_run(algorithm, genome, patterns, algorithm.get_name(), 1))
+        test_results_file.write(str(benchmark_run(algorithm, genome, patterns, algorithm.get_name(), 5)))
