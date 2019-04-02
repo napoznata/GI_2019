@@ -33,7 +33,7 @@ class IndexHash(AlgorithmWithIndexStructure):
         # find offsets of each substring in pattern less or equal to default pattern length
         for i in range(0, len(pattern), IndexHash.__pattern_len):
             substring = pattern[i:i + IndexHash.__pattern_len]
-            offsets = self.__index[substring] if len(substring) == IndexHash.__pattern_len \
+            offsets = self.__index[substring] if len(substring) == IndexHash.__pattern_len and substring in self.__index \
                 else [item + key.index(substring) for key in filter(lambda x: substring in x, self.__index.keys())
                       for item in self.__index[key]]
             # check if current substring offset is immediately after the previous substring offset
