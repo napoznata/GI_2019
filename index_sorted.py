@@ -1,15 +1,17 @@
-from unit_test import *
-from main import AlgorithmWithIndexStructure
+from algorithm import AlgorithmWithIndexStructure
 
 
 class IndexSorted(AlgorithmWithIndexStructure):
+    def get_name(self):
+        return "IndexSorted"
+
     __pattern_len = 5
 
     def __init__(self):
         self.__text = ""
         self.__index = []
 
-    def initWithText(self, text):
+    def init_with_text(self, text):
         self.__text = text
         self.__index = []
 
@@ -66,8 +68,3 @@ class IndexSorted(AlgorithmWithIndexStructure):
                 break
 
         return sorted(results)
-
-
-# Run tests
-test_results = run_algorithm_tests(IndexSorted())
-print_test_results(test_results)

@@ -1,12 +1,14 @@
-from main import AlgorithmWithIndexStructure
-from unit_test import *
+from algorithm import AlgorithmWithIndexStructure
 
 
 class IndexHash(AlgorithmWithIndexStructure):
 
+    def get_name(self):
+        return "IndexHash"
+
     __pattern_len = 5
 
-    def initWithText(self, text):
+    def init_with_text(self, text):
         self.__text = text
         self.__index = {}
 
@@ -41,8 +43,3 @@ class IndexHash(AlgorithmWithIndexStructure):
                 break
 
         return sorted(results)
-
-
-# Run tests
-test_results = run_algorithm_tests(IndexHash())
-print_test_results(test_results)

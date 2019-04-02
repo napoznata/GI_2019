@@ -1,5 +1,9 @@
 import os
 from pathlib import Path
+from index_hash import IndexHash
+from index_sorted import IndexSorted
+from suffix_array import SuffixArray
+from suffix_tree import SuffixTree
 
 unit_tests_dir = Path("Tests/Unit/")
 
@@ -45,7 +49,7 @@ def run_algorithm_tests(algorithm):
         name = lines[0].rstrip('\n')
         genome = lines[1].rstrip('\n')
 
-        algorithm.initWithText(genome)
+        algorithm.init_with_text(genome)
 
         for pattern_line in lines[2:]:
             line_parts = pattern_line.rstrip('\n').split(':')
@@ -72,3 +76,9 @@ def run_algorithm_tests(algorithm):
 def print_test_results(results):
     for result in results:
         print(result.get_description())
+
+
+algorithms = [IndexHash(), IndexSorted(), SuffixArray(), SuffixTree()]
+for algorithm in algorithms:
+    test_results = run_algorithm_tests(algorithm)
+    print_test_results(test_results)

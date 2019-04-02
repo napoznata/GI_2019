@@ -1,4 +1,4 @@
-from main import AlgorithmWithIndexStructure
+from algorithm import AlgorithmWithIndexStructure
 import time
 import threading
 import psutil
@@ -10,13 +10,14 @@ import sys
 
 class BenchmarkResult(object):
 
-    def __init__(self, algorithm_name, text, pattern_set, init_time, patterns_query_time, used_memory):
+    def __init__(self, algorithm_name, text, pattern_set, init_time, patterns_query_time, used_memory, query_results):
         self.__algorithm_name = algorithm_name
         self.__text = text
         self.__pattern_set = pattern_set
         self.__init_time = init_time
         self.__patterns_query_time = patterns_query_time
         self.__used_memory = used_memory
+        self.__query_results = query_results
 
     def get_algorithm_name(self):
         return self.__algorithm_name
@@ -39,6 +40,9 @@ class BenchmarkResult(object):
     def get_memory_usage(self):
         return self.__used_memory
 
+    def get_query_results(self):
+        return self.__query_results
+
     def __repr__(self):
         return self.__str__()
 
@@ -49,7 +53,8 @@ class BenchmarkResult(object):
                "Text init time: \t\t" + str(self.__init_time) + "\n" + \
                "Total query time: \t\t" + str(self.__patterns_query_time) + "\n" \
                "Total execution time: \t" + str(self.get_total_execution_time()) + "\n" \
-               "--------------------------------------------------------------" \
+                "Query results: \t" + str(self.get_query_results()) + "\n" \
+                "--------------------------------------------------------------" \
 
 
 
@@ -86,6 +91,9 @@ class MemoryMonitor(threading.Thread):
 
 class DummyAlgorithm(AlgorithmWithIndexStructure):
 
+    def get_name(self):
+        return "DummyAlgorithm"
+
     @staticmethod
     def __allocate_memory(size):
         x = bytearray(size//2)
@@ -93,7 +101,7 @@ class DummyAlgorithm(AlgorithmWithIndexStructure):
         del x
         return y
 
-    def initWithText(self, text):
+    def init_with_text(self, text):
         self.__allocate_memory(512000000)
         time.sleep(3)
 
@@ -109,6 +117,7 @@ def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor
     min_init_time = sys.maxsize + 1
     min_total_query_time = sys.maxsize + 1
     min_memory_all = sys.maxsize + 1
+    query_results = {}
 
     for i in range(iterations):
 
@@ -121,7 +130,7 @@ def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor
         mem_monitor.start_monitoring()
 
         init_time_start = time.time()
-        alg_object.initWithText(text)
+        alg_object.init_with_text(text)
         init_time = time.time() - init_time_start
 
         min_init_time = min(min_init_time, init_time)
@@ -133,27 +142,30 @@ def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor
             print("Query pattern \"" + pattern + "\"...")
 
             time_start = time.time()
-            alg_object.query(pattern)
+            result = alg_object.query(pattern)
             time_pattern = time.time() - time_start
 
             total_query_time += time_pattern
+
+            if i == 0:
+                query_results[pattern] = result
 
         min_total_query_time = min(min_total_query_time, total_query_time)
         min_memory_all = min(min_memory_all, mem_monitor.finish_monitoring())
 
         del alg_object
 
-    return BenchmarkResult(title, text, patterns, min_init_time, min_total_query_time, min_memory_all)
+    return BenchmarkResult(title, text, patterns, min_init_time, min_total_query_time, min_memory_all, query_results)
 
 
 # Unit test for benchmark_run function
 
-# Use a simulated exact match algorithm
-dummy_algorithm = DummyAlgorithm()
-
-# Simulate initial memory usage
-bytearray(64000)
-
-results = benchmark_run(dummy_algorithm, "ACCTCGATCCGATCG", ["ATTG", "CCA"], "DummyAlgorithm", 5)
-
-print("\n" + str(results))
+# # Use a simulated exact match algorithm
+# dummy_algorithm = DummyAlgorithm()
+#
+# # Simulate initial memory usage
+# bytearray(64000)
+#
+# results = benchmark_run(dummy_algorithm, "ACCTCGATCCGATCG", ["ATTG", "CCA"], dummy_algorithm.get_name(), 5)
+#
+# print("\n" + str(results))
