@@ -158,6 +158,26 @@ def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor
     return BenchmarkResult(title, text, patterns, min_init_time, min_total_query_time, min_memory_all, query_results)
 
 
+class ProgressBar(object):
+
+    __max_bar_value = 50
+
+    __bar_value = 0
+    __max_progress = 0
+    __current_progress = 0
+
+    def __init__(self, max_progress):
+        self.__max_progress = max_progress
+
+    def update_progress(self, progress):
+        self.__current_progress = (progress / self.__max_progress) * 100
+        print('' * 100, end='\r')
+        print('Progress: {:.2f}%'.format(self.__current_progress), end='')
+        if progress == self.__max_progress:
+            print('\n', end='')
+
+
+
 # Unit test for benchmark_run function
 
 # # Use a simulated exact match algorithm

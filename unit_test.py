@@ -80,5 +80,6 @@ def print_test_results(results):
 
 algorithms = [IndexHash(), IndexSorted(), SuffixArray(), SuffixTree()]
 for algorithm in algorithms:
+    print(algorithm.get_name())
     test_results = run_algorithm_tests(algorithm)
     print_test_results(test_results)
