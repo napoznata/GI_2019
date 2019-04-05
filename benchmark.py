@@ -8,6 +8,8 @@ import gc
 import sys
 
 
+benchmark_print = False
+
 class BenchmarkResult(object):
 
     def __init__(self, algorithm_name, text, pattern_set, init_time, patterns_query_time, used_memory, query_results):
@@ -171,10 +173,16 @@ class ProgressBar(object):
 
     def update_progress(self, progress):
         self.__current_progress = (progress / self.__max_progress) * 100
-        print('' * 100, end='\r')
-        print('Progress: {:.2f}%'.format(self.__current_progress), end='')
-        if progress == self.__max_progress:
-            print('\n', end='')
+        if benchmark_print:
+            print('' * 100, end='\r')
+            print('Progress: {:.2f}%'.format(self.__current_progress), end='')
+            if progress == self.__max_progress:
+                print('\n', end='')
+
+    @staticmethod
+    def print_message(message):
+        if benchmark_print:
+            print(message)
 
 
 
