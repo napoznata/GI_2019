@@ -83,6 +83,6 @@ def plot_show():
 
 
 # Usage:
-plot_add_results(dummy_results, 'Plot test')
-plot_add_results(dummy_results, 'Plot test')
-plot_show()
+#plot_add_results(dummy_results, 'Plot test')
+#plot_add_results(dummy_results, 'Plot test')
+#plot_show()
