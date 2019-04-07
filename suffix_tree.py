@@ -30,8 +30,7 @@ class SuffixTree(AlgorithmWithIndexStructure):
     def init_with_text(self, text):
         self.__text = text + '$'
 
-        init_progress = ProgressBar(len(self.__text))
-        ProgressBar.print_message("Adding suffixes to tree...")
+        init_progress = ProgressBar(len(self.__text), "Adding suffixes to tree...")
 
         self.__root = self.Node(None)
         self.__root.out[self.__text[0]] = self.Node(self.__text, 0)  # trie for just longest suf
@@ -69,10 +68,12 @@ class SuffixTree(AlgorithmWithIndexStructure):
                     cur.out[self.__text[j]] = self.Node(self.__text[j:], i)
                 init_progress.update_progress(i)
 
+        init_progress.update_progress(len(self.__text))
+
     def follow_path(self, pattern):
         cur = self.__root
         i = 0
-        path_progress = ProgressBar(len(pattern))
+        path_progress = ProgressBar(len(pattern), "Traversing suffix tree...")
         while i < len(pattern):
             path_progress.update_progress(i)
             c = pattern[i]
@@ -101,7 +102,6 @@ class SuffixTree(AlgorithmWithIndexStructure):
         if len(pattern) == 0:
             return []
 
-        ProgressBar.print_message("Traversing suffix tree...")
         node = self.follow_path(pattern)
-        ProgressBar.print_message("Getting offsets of the leaves...")
-        return node.get_leaves_offsets() if node is not None else []
+        result = node.get_leaves_offsets() if node is not None else []
+        return result
