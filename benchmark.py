@@ -8,7 +8,8 @@ import gc
 import sys
 
 
-benchmark_print = False
+benchmark_print = True
+
 
 class BenchmarkResult(object):
 

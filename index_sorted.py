@@ -32,11 +32,8 @@ class IndexSorted(AlgorithmWithIndexStructure):
 
         ProgressBar.print_message("Adding substring indexes...")
         for i in range(len(self.__text) + 1):
-            self.__index.append((self.__text[i:i + IndexSorted.__pattern_len], i))  # add <substr, offset> pair
+            bisect.insort(self.__index, (self.__text[i:i + IndexSorted.__pattern_len], i))
             init_progress.update_progress(i)
-
-        ProgressBar.print_message("Sorting index structure...")
-        self.__index.sort()  # sort pairs
 
     def query(self, pattern):
         if len(pattern) == 0:
@@ -64,4 +61,5 @@ class IndexSorted(AlgorithmWithIndexStructure):
             if len(results) == 0:
                 break
 
-        return sorted(results)
+        results.sort()
+        return results

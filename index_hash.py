@@ -42,4 +42,5 @@ class IndexHash(AlgorithmWithIndexStructure):
             if len(results) == 0:
                 break
 
-        return sorted(results)
+        results.sort()
+        return results

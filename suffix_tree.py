@@ -18,7 +18,9 @@ class SuffixTree(AlgorithmWithIndexStructure):
                 return [self.offset]
             else:
                 # node is internal, propagates function call further down the tree
-                return sorted([el for c in self.out for el in self.out[c].getLeavesOffsets()])
+                offsets = [el for c in self.out for el in self.out[c].getLeavesOffsets()]
+                offsets.sort()
+                return offsets
 
     def __init__(self):
         self.__root = self.Node(None)

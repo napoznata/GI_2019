@@ -1,6 +1,5 @@
 from algorithm import AlgorithmWithIndexStructure
-import bisect
-import functools
+from benchmark import ProgressBar
 
 
 class SuffixArray(AlgorithmWithIndexStructure):
@@ -13,9 +12,9 @@ class SuffixArray(AlgorithmWithIndexStructure):
         if hi is None:
             hi = len(a)
         while lo < hi:
-            mid = (lo+hi)//2
+            mid = (lo + hi) // 2
             if self.__text[a[mid]:][:len(x)] < x:
-                lo = mid+1
+                lo = mid + 1
             else:
                 hi = mid
         return lo
@@ -70,26 +69,25 @@ class SuffixArray(AlgorithmWithIndexStructure):
 
     def init_with_text(self, text):
         self.__text = text
-        self.__suffix_array = list(reversed(range(len(self.__text))))
+        self.__suffix_array = []
 
-        # Sort by suffix
-        self.__suffix_array.sort(key=functools.cmp_to_key(self.__compare_suffix))
+        init_progress = ProgressBar(len(self.__text))
+        ProgressBar.print_message("Adding suffixes...")
 
-
-#        self.__test_array = []
-#        for index in self.__suffix_array:
-#            self.__test_array.append((self.__text[index:], index))
-
+        for x in list(reversed(range(len(self.__text)))):
+            index = self.__bisect_left(text[x:])
+            self.__suffix_array.insert(index, x)
+            init_progress.update_progress(len(self.__text) - x)
 
     def query(self, pattern):
         result_list = []
 
         if pattern != "":
+            leftmost = self.__bisect_left(pattern)
+            rightmost = self.__bisect_right(pattern)
 
-                leftmost = self.__bisect_left(pattern)
-                rightmost = self.__bisect_right(pattern)
+            if leftmost < rightmost:
+                result_list += list(self.__suffix_array[leftmost:rightmost])
 
-                if leftmost < rightmost:
-                    result_list += list(self.__suffix_array[leftmost:rightmost])
-
-        return sorted(result_list)
+        result_list.sort()
+        return result_list
