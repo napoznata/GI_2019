@@ -1,4 +1,5 @@
 import matplotlib.pyplot as pyplot
+import pandas as pd
 import numpy
 from benchmark import BenchmarkResult
 
@@ -47,6 +48,11 @@ def plot_add_results(results, title):
     mem_usages = [result.get_memory_usage() for result in results]
     times_init = [result.get_init_time() for result in results]
     times_query = [result.get_patterns_query_time() for result in results]
+
+    data = {"Memory usage (MB)": mem_usages, "Initialisation time (s)": times_init,
+            "Query time (s)": times_query}
+    df = pd.DataFrame(data, index=names)
+    print(df)
 
     index = numpy.arange(num_of_algorithms)
     figure, axis = pyplot.subplots(2, 1, constrained_layout=True)
