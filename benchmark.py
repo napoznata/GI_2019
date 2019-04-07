@@ -175,7 +175,11 @@ class ProgressBar(object):
         self.__max_progress = max_progress
 
     def update_progress(self, progress):
-        self.__current_progress = (progress / self.__max_progress) * 100
+        if self.__max_progress != 0:
+            self.__current_progress = (progress / self.__max_progress) * 100
+        else:
+            self.__current_progress = 0
+
         if benchmark_print:
             print('' * 100, end='\r')
             print('Progress: {:.2f}%'.format(self.__current_progress), end='')
