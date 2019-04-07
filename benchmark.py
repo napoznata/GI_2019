@@ -13,14 +13,13 @@ benchmark_print = True
 
 class BenchmarkResult(object):
 
-    def __init__(self, algorithm_name, text, pattern_set, init_time, patterns_query_time, used_memory, query_results):
+    def __init__(self, algorithm_name, text, pattern_set, init_time, patterns_query_time, used_memory):
         self.__algorithm_name = algorithm_name
         self.__text = text
         self.__pattern_set = pattern_set
         self.__init_time = init_time
         self.__patterns_query_time = patterns_query_time
         self.__used_memory = used_memory
-        self.__query_results = query_results
 
     def get_algorithm_name(self):
         return self.__algorithm_name
@@ -43,9 +42,6 @@ class BenchmarkResult(object):
     def get_memory_usage(self):
         return self.__used_memory
 
-    def get_query_results(self):
-        return self.__query_results
-
     def __repr__(self):
         return self.__str__()
 
@@ -56,7 +52,6 @@ class BenchmarkResult(object):
                "Text init time: \t\t" + str(self.__init_time) + "\n" + \
                "Total query time: \t\t" + str(self.__patterns_query_time) + "\n" \
                "Total execution time: \t" + str(self.get_total_execution_time()) + "\n" \
-                "Query results: \t" + str(self.get_query_results()) + "\n" \
                 "--------------------------------------------------------------" \
 
 
@@ -92,6 +87,21 @@ class MemoryMonitor(threading.Thread):
         return "MonitorThread #" + threading.Thread.getName(self)
 
 
+class QueryThread(threading.Thread):
+
+    def __init__(self, algorithm, pattern):
+        threading.Thread.__init__(self)
+        self.daemon = True
+        self.__process = psutil.Process(os.getpid())
+        self.__algorithm = algorithm
+        self.__pattern = pattern
+
+    def run(self):
+        print("Query pattern \"" + self.__pattern + "\"...")
+
+        self.__algorithm.query(self.__pattern)
+
+
 class DummyAlgorithm(AlgorithmWithIndexStructure):
 
     def get_name(self):
@@ -120,7 +130,6 @@ def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor
     min_init_time = sys.maxsize + 1
     min_total_query_time = sys.maxsize + 1
     min_memory_all = sys.maxsize + 1
-    query_results = {}
 
     for i in range(iterations):
 
@@ -138,27 +147,20 @@ def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor
 
         min_init_time = min(min_init_time, init_time)
 
-        total_query_time = 0
-
-        for pattern in patterns:
-
-            print("Query pattern \"" + pattern + "\"...")
-
-            time_start = time.time()
-            result = alg_object.query(pattern)
-            time_pattern = time.time() - time_start
-
-            total_query_time += time_pattern
-
-            if i == 0:
-                query_results[pattern] = result
+        query_threads = [QueryThread(alg_object, pattern) for pattern in patterns]
+        time_start = time.time()
+        for thr in query_threads:
+            thr.start()
+        for thr in query_threads:
+            thr.join()
+        total_query_time = time.time() - time_start
 
         min_total_query_time = min(min_total_query_time, total_query_time)
         min_memory_all = min(min_memory_all, mem_monitor.finish_monitoring())
 
         del alg_object
 
-    return BenchmarkResult(title, text, patterns, min_init_time, min_total_query_time, min_memory_all, query_results)
+    return BenchmarkResult(title, text, patterns, min_init_time, min_total_query_time, min_memory_all)
 
 
 class ProgressBar(object):
