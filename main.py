@@ -15,7 +15,7 @@ def rstrip(line):
 
 
 #algorithms = [IndexHash(), IndexSorted(), SuffixArray(), SuffixTree()]
-algorithms = [SuffixArray()]
+algorithms = [IndexHash()]
 
 tests_dir = Path("Tests/Performance/")
 tests_results_dir = Path("Tests/Results/")
