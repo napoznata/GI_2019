@@ -1,4 +1,5 @@
 from algorithm import AlgorithmWithIndexStructure
+from benchmark import ProgressBar
 
 
 class SuffixTree(AlgorithmWithIndexStructure):
@@ -12,13 +13,15 @@ class SuffixTree(AlgorithmWithIndexStructure):
             self.offset = offset  # suffix offset in text
             self.out = {}  # outgoing edges; maps characters to nodes
 
-        def getLeavesOffsets(self):
+        def get_leaves_offsets(self):
             if self.offset != -1:
                 # node is a leaf, returns suffix offset
                 return [self.offset]
             else:
                 # node is internal, propagates function call further down the tree
-                return sorted([el for c in self.out for el in self.out[c].getLeavesOffsets()])
+                offsets = [el for c in self.out for el in self.out[c].get_leaves_offsets()]
+                offsets.sort()
+                return offsets
 
     def __init__(self):
         self.__root = self.Node(None)
@@ -26,6 +29,9 @@ class SuffixTree(AlgorithmWithIndexStructure):
 
     def init_with_text(self, text):
         self.__text = text + '$'
+
+        init_progress = ProgressBar(len(self.__text), "Adding suffixes to tree...")
+
         self.__root = self.Node(None)
         self.__root.out[self.__text[0]] = self.Node(self.__text, 0)  # trie for just longest suf
         # add the rest of the suffixes, from longest to shortest
@@ -60,13 +66,19 @@ class SuffixTree(AlgorithmWithIndexStructure):
                 else:
                     # Fell off tree at a node: make new edge hanging off it
                     cur.out[self.__text[j]] = self.Node(self.__text[j:], i)
+                init_progress.update_progress(i)
 
-    def followPath(self, pattern):
+        init_progress.update_progress(len(self.__text))
+
+    def follow_path(self, pattern):
         cur = self.__root
         i = 0
+        path_progress = ProgressBar(len(pattern), "Traversing suffix tree...")
         while i < len(pattern):
+            path_progress.update_progress(i)
             c = pattern[i]
             if c not in cur.out:
+                path_progress.update_progress(len(pattern))
                 return None  # fell off at a node
             child = cur.out[pattern[i]]
             lab = child.lab
@@ -76,15 +88,20 @@ class SuffixTree(AlgorithmWithIndexStructure):
             if j - i == len(lab):
                 cur = child  # exhausted edge
                 i = j
+                path_progress.update_progress(i)
             elif j == len(pattern):
+                path_progress.update_progress(len(pattern))
                 return child  # exhausted query string in middle of edge
             else:
+                path_progress.update_progress(len(pattern))
                 return None  # fell off in the middle of the edge
+        path_progress.update_progress(len(pattern))
         return cur  # exhausted query string at internal node
 
     def query(self, pattern):
         if len(pattern) == 0:
             return []
 
-        node = self.followPath(pattern)
-        return node.getLeavesOffsets() if node is not None else []
+        node = self.follow_path(pattern)
+        result = node.get_leaves_offsets() if node is not None else []
+        return result

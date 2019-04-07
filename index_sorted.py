@@ -1,11 +1,24 @@
 from algorithm import AlgorithmWithIndexStructure
+from benchmark import ProgressBar
+import bisect
+
+
+def find_leftmost(index_list, substring):
+    return bisect.bisect_left(index_list, substring)
+
+
+def find_righmost(index_list, substring):
+    return bisect.bisect_right(index_list, substring)
 
 
 class IndexSorted(AlgorithmWithIndexStructure):
     def get_name(self):
         return "IndexSorted"
 
-    __pattern_len = 5
+    __pattern_len = 10
+
+    def __extract_pattern_at(self, index):
+        return self.__text[index:index + IndexSorted.__pattern_len]
 
     def __init__(self):
         self.__text = ""
@@ -15,56 +28,39 @@ class IndexSorted(AlgorithmWithIndexStructure):
         self.__text = text
         self.__index = []
 
+        init_progress = ProgressBar(len(self.__text) + 1, "Adding substring indexes...")
+
         for i in range(len(self.__text) + 1):
-            self.__index.append((self.__text[i:i + IndexSorted.__pattern_len], i))  # add <substr, offset> pair
-        self.__index.sort()  # sort pairs
+            bisect.insort(self.__index, (self.__text[i:i + IndexSorted.__pattern_len], i))
+            init_progress.update_progress(i)
+
+        init_progress.update_progress(len(self.__text) + 1)
 
     def query(self, pattern):
         if len(pattern) == 0:
             return []
 
-        # include all offsets initially
-        results = [x for x in range(0, len(self.__text))]
+        results = []
+
+        query_progress = ProgressBar(len(pattern), "Running query...")
 
         for i in range(0, len(pattern), IndexSorted.__pattern_len):
-            substring = pattern[i:i + IndexSorted.__pattern_len]
 
-            result_list = []
-            found_at = -1
-            low = 0
-            high = len(self.__index) - 1
+            query_progress.update_progress(i)
 
-            while low <= high:
+            substring = pattern[i: i + IndexSorted.__pattern_len]
 
-                mid = low + (high - low) // 2  # Integer division
+            index_list = [x[0][:min(len(substring), len(pattern))] for x in self.__index]
 
-                if self.__index[mid][0].startswith(substring):
-                    found_at = mid + self.__index[mid][0].index(substring)
-                    break
-                elif substring > self.__index[mid][0]:
-                    low = mid + 1
-                else:
-                    high = mid - 1
+            leftmost = find_leftmost(index_list, substring)
+            rightmost = find_righmost(index_list, substring)
 
-            if found_at != -1:
-                # Append item found in binary search
-                result_list.append(self.__index[found_at][1])
-
-                # Linear search down for the rest
-                index_down = found_at - 1
-                while index_down > 0 and self.__index[index_down][0].startswith(substring):
-                    result_list.append(self.__index[index_down][1])
-                    index_down -= 1
-
-                # Linear search up for the rest
-                index_up = found_at + 1
-                while index_up < len(self.__index) and self.__index[index_up][0].startswith(substring):
-                    result_list.append(self.__index[index_up][1])
-                    index_up += 1
-
-            results = list(filter(lambda x: (x + i) in result_list, results))
+            if leftmost <= rightmost and self.__index[leftmost][0].startswith(substring):
+                result_tuples = self.__index[leftmost:rightmost]
+                results = list([x[1] for x in result_tuples])
             # return if there are no results
             if len(results) == 0:
                 break
 
-        return sorted(results)
+        results.sort()
+        return results
