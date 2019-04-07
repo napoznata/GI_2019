@@ -46,8 +46,7 @@ class SuffixArray(AlgorithmWithIndexStructure):
         self.__text = text
         self.__suffix_array = []
 
-        init_progress = ProgressBar(len(self.__text))
-        ProgressBar.print_message("Adding suffixes...")
+        init_progress = ProgressBar(len(self.__text), "Adding suffixes...")
 
         for x in list(reversed(range(len(self.__text)))):
             index = self.__bisect_left(text[x:])
