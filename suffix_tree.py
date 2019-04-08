@@ -36,7 +36,16 @@ class Node:
 class SuffixTree(AlgorithmWithIndexStructure):
 
     def init_with_text(self, text):
-        self._string = text
+        self.lastNewNode = None
+        self.activeNode = None
+        self.activeEdge = -1
+        self.activeLength = 0
+        self.remainingSuffixCount = 0
+        self.rootEnd = None
+        self.splitEnd = None
+        self.size = -1
+        self.root = None
+        self._string = text + "$"
         self.build_suffix_tree()
 
     def query(self, pattern):
@@ -75,6 +84,8 @@ class SuffixTree(AlgorithmWithIndexStructure):
 
     @staticmethod
     def edge_length(node):
+        if node.end == node.start == -1:
+            return 0
         return node.end - node.start + 1
 
     def walk_down(self, current_node):
@@ -224,7 +235,7 @@ class SuffixTree(AlgorithmWithIndexStructure):
         init_progress = ProgressBar(self.size, "Building suffix tree...")
 
         for i in range(self.size):
-            init_progress.update_progress((i))
+            init_progress.update_progress(i)
             self.extend_suffix_tree(i)
         init_progress.update_progress(self.size)
 
@@ -272,6 +283,10 @@ class SuffixTree(AlgorithmWithIndexStructure):
 
         if node.leaf:
             first = node.start - (self.sub_length - sub_length)
-            return [first, *inner(node, self.sub_length)]
+            result = [first, *inner(node, self.sub_length)]
+            result.sort()
+            return result
         else:
-            return list(inner(node, self.sub_length))
+            result = list(inner(node, self.sub_length))
+            result.sort()
+            return result
