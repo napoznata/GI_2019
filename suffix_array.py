@@ -43,7 +43,7 @@ class SuffixArray(AlgorithmWithIndexStructure):
         self.__text = ""
 
     def init_with_text(self, text):
-        self.__text = text
+        self.__text = text + "$"
         self.__suffix_array = []
 
         init_progress = ProgressBar(len(self.__text), "Adding suffixes...")

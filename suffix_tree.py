@@ -13,17 +13,16 @@ class Node:
         # for leaf nodes, it stores the index of suffix for
         # the path  from root to leaf"""
         self.leaf = leaf
-        self.suffixIndex = None
         self.start = None
         self.end = None
         self.suffixLink = None
 
     def __eq__(self, node):
-        atg = attrgetter('start', 'end', 'suffixIndex')
+        atg = attrgetter('start', 'end')
         return atg(self) == atg(node)
 
     def __ne__(self, node):
-        atg = attrgetter('start', 'end', 'suffixIndex')
+        atg = attrgetter('start', 'end')
         return atg(self) != atg(node)
 
     def __getattribute__(self, name):
@@ -84,8 +83,6 @@ class SuffixTree(AlgorithmWithIndexStructure):
 
     @staticmethod
     def edge_length(node):
-        if node.end == node.start == -1:
-            return 0
         return node.end - node.start + 1
 
     def walk_down(self, current_node):
@@ -113,10 +110,6 @@ class SuffixTree(AlgorithmWithIndexStructure):
         node.suffixLink = self.root
         node.start = start
         node.end = end
-        """suffixIndex will be set to -1 by default and
-           actual suffix index will be set later for leaves
-           at the end of all phases"""
-        node.suffixIndex = -1
         return node
 
     def extend_suffix_tree(self, pos):
@@ -216,10 +209,13 @@ class SuffixTree(AlgorithmWithIndexStructure):
                 self.activeNode = self.activeNode.suffixLink
 
     def walk_dfs(self, current):
-        start, end = current.start, current.end
-        yield self._string[start: end + 1]
+        def first_char(el):
+            return self._string[el.start]
 
-        for node in current.children.values():
+        start, end = current.start, current.end
+        yield (self._string[start: end + 1], start, end)
+
+        for node in sorted(current.children.values(), key=first_char):
             if node:
                 yield from self.walk_dfs(node)
 
@@ -237,12 +233,14 @@ class SuffixTree(AlgorithmWithIndexStructure):
         for i in range(self.size):
             init_progress.update_progress(i)
             self.extend_suffix_tree(i)
+
         init_progress.update_progress(self.size)
+        self.print_dfs()
 
     def traverse(self, node, sub_string):
         if sub_string:
             # Since each child starts with a unique character we will pursue the process for the child that sub-string
-            # Starts with the frist character of this edge
+            # Starts with the first character of this edge
             item = next(((char, child) for char, child in node.children.items() if sub_string.startswith(char)), None)
 
             if item:
@@ -250,30 +248,33 @@ class SuffixTree(AlgorithmWithIndexStructure):
                 start, end = child.start, child.end
                 # If the edge is equal with sub-string returns the index
                 if self._string[start: end + 1].startswith(sub_string):
-                    return self.find_all_match(child, len(sub_string))
+                    return self.find_all_match(child, (end - start + 1) - len(sub_string) + self.sub_length)
                 # sub-string starts with the frist character of our edge but is not equal with it
                 # So call the travese for the rest of sub-string (from the lenght of previous edge)
-                return self.traverse(child, sub_string[end - start + 1:])
+                if child.leaf:
+                    return []
+                else:
+                    return self.traverse(child, sub_string[end - start + 1:])
             else:
                 # At this level there were no edge that sub-string starts with its leading character.
-                return -1
+                return []
         return self.find_all_match(node, len(sub_string))
 
     def check(self):
         if self.root is None:
-            return -1
+            return []
         if not isinstance(self.sub_string, str):
-            return -1
+            return []
         if not self.sub_string:
             # Every string starts with an empty string
-            return 0
+            return []
 
         return self.traverse(self.root, self.sub_string)
 
     def find_all_match(self, node, sub_length):
 
         def inner(sel_node, traversed_edges):
-            for char, child in sel_node.children.items():
+            for char, child in sorted(sel_node.children.items()):
                 if child.leaf:
                     yield child.start - traversed_edges
                 else:
@@ -287,6 +288,10 @@ class SuffixTree(AlgorithmWithIndexStructure):
             result.sort()
             return result
         else:
-            result = list(inner(node, self.sub_length))
+            result = list(inner(node, sub_length))
             result.sort()
             return result
+
+    def print_dfs(self):
+        for sub in self.walk_dfs(self.root):
+            print(sub)
