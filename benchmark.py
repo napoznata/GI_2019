@@ -177,6 +177,7 @@ class ProgressBar(object):
             print(title)
             ProgressBar.__mutex.release()
 
+
     def update_progress(self, progress):
         if self.__max_progress != 0:
             self.__current_progress = (progress / self.__max_progress) * 100
