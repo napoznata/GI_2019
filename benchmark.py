@@ -172,13 +172,11 @@ class ProgressBar(object):
 
     def __init__(self, max_progress, title):
         self.__max_progress = max_progress
-        ProgressBar.__mutex.acquire()
-        print(title)
-        ProgressBar.__mutex.release()
+        if benchmark_print:
+            ProgressBar.__mutex.acquire()
+            print(title)
+            ProgressBar.__mutex.release()
 
-    def __del__(self):
-        if self.__current_progress < 100:
-            print('')
 
     def update_progress(self, progress):
         if self.__max_progress != 0:
@@ -186,13 +184,14 @@ class ProgressBar(object):
         else:
             raise Exception('Maximum progress must be greater than zero!')
 
-        ProgressBar.__mutex.acquire()
-        if self.__current_progress >= 100:
-            print('')
-        else:
-            print('' * 100, end='\r')
-            print('Progress: {:.2f}%'.format(self.__current_progress), end='')
-        ProgressBar.__mutex.release()
+        if benchmark_print:
+            ProgressBar.__mutex.acquire()
+            if self.__current_progress >= 100:
+                print('')
+            else:
+                print('' * 100, end='\r')
+                print('Progress: {:.2f}%'.format(self.__current_progress), end='')
+            ProgressBar.__mutex.release()
 
 
 # Unit test for benchmark_run function

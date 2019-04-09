@@ -235,7 +235,6 @@ class SuffixTree(AlgorithmWithIndexStructure):
             self.extend_suffix_tree(i)
 
         init_progress.update_progress(self.size)
-        self.print_dfs()
 
     def traverse(self, node, sub_string):
         if sub_string:
