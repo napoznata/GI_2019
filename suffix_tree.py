@@ -208,16 +208,17 @@ class SuffixTree(AlgorithmWithIndexStructure):
             elif self.activeNode != self.root:  # APCFER2C2
                 self.activeNode = self.activeNode.suffixLink
 
-    def walk_dfs(self, current):
+    def walk_dfs(self, current, chars_traversed):
         def first_char(el):
             return self._string[el.start]
 
         start, end = current.start, current.end
-        yield (self._string[start: end + 1], start, end)
+        chars_traversed = end - start + 1 + chars_traversed
+        yield (self._string[start: end + 1], chars_traversed, current.leaf)
 
         for node in sorted(current.children.values(), key=first_char):
             if node:
-                yield from self.walk_dfs(node)
+                yield from self.walk_dfs(node, chars_traversed)
 
     def build_suffix_tree(self):
         self.size = len(self._string)
@@ -292,5 +293,15 @@ class SuffixTree(AlgorithmWithIndexStructure):
             return result
 
     def print_dfs(self):
-        for sub in self.walk_dfs(self.root):
+        for sub in self.walk_dfs(self.root, 0):
             print(sub)
+
+    def gen_suffix_array(self):
+        array = []
+        init_progress = ProgressBar(self.size + 1, "Adding substring indexes...")
+        for sub in self.walk_dfs(self.root, 0):
+            if sub[2]:
+                array.append(self.size - sub[1] + 1)
+                init_progress.update_progress(len(array))
+
+        return array

@@ -1,5 +1,5 @@
 from algorithm import AlgorithmWithIndexStructure
-from benchmark import ProgressBar
+from suffix_tree import SuffixTree
 import bisect
 
 
@@ -46,12 +46,10 @@ class SuffixArray(AlgorithmWithIndexStructure):
         self.__text = text + "$"
         self.__suffix_array = []
 
-        init_progress = ProgressBar(len(self.__text), "Adding suffixes...")
+        tree = SuffixTree()
+        tree.init_with_text(self.__text[:-1])
 
-        for x in list(reversed(range(len(self.__text)))):
-            index = self.__bisect_left(text[x:])
-            self.__suffix_array.insert(index, x)
-            init_progress.update_progress(len(self.__text) - x)
+        self.__suffix_array = tree.gen_suffix_array()
 
     def query(self, pattern):
         result_list = []
