@@ -2,33 +2,15 @@ import matplotlib.pyplot as pyplot
 import pandas as pd
 import numpy
 from benchmark import BenchmarkResult
+from config import *
 
-dummy_results = [BenchmarkResult('Suffix Array', '', '', 180, 3600, 2700, None),
-                 BenchmarkResult('Suffix Tree', '', '', 200, 2500, 4000, None),
-                 BenchmarkResult('Index Hash', '', '', 300, 5000, 3500, None),
-                 BenchmarkResult('Index Sorted', '', '', 500, 6000, 1500, None)]
+# Used for visualization testing
+dummy_results = [BenchmarkResult('Suffix Array', '', '', 180, 3600, 2700),
+                 BenchmarkResult('Suffix Tree', '', '', 200, 2500, 4000),
+                 BenchmarkResult('Index Hash', '', '', 300, 5000, 3500),
+                 BenchmarkResult('Index Sorted', '', '', 500, 6000, 1500)]
 
 num_of_algorithms = 4
-
-# Memory usage bar color for each algorithm
-colors_memory_usage = [
-    '#f4a261',
-    '#F2D0A4',
-    '#CC7E85',
-    '#52965a']
-
-# Init time bar color for each algorithm
-colors_time_init = [
-    (0.2, 0.7, 0.5),
-    (0.2, 0.7, 0.5),
-    (0.2, 0.7, 0.5),
-    (0.2, 0.7, 0.5)]
-
-# Additional brightness for query time bar
-color_offset_query = 0.2
-
-# The name kind of speaks for itself...
-bar_thickness = 0.35
 
 # Generate bar color for query time
 colors_time_query = list([(r + color_offset_query, g + color_offset_query, b + color_offset_query)
@@ -80,9 +62,3 @@ def plot_add_results(results, title):
 # Displays all the previously added plots in a separate window
 def plot_show():
     pyplot.show()
-
-
-# Usage:
-#plot_add_results(dummy_results, 'Plot test')
-#plot_add_results(dummy_results, 'Plot test')
-#plot_show()

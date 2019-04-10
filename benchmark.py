@@ -6,9 +6,7 @@ import os
 import copy
 import gc
 import sys
-
-
-benchmark_print = True
+from config import *
 
 
 class BenchmarkResult(object):
@@ -172,7 +170,7 @@ class ProgressBar(object):
 
     def __init__(self, max_progress, title):
         self.__max_progress = max_progress
-        if benchmark_print:
+        if progress_print:
             ProgressBar.__mutex.acquire()
             print(title)
             ProgressBar.__mutex.release()
@@ -184,7 +182,7 @@ class ProgressBar(object):
         else:
             raise Exception('Maximum progress must be greater than zero!')
 
-        if benchmark_print:
+        if progress_print:
             ProgressBar.__mutex.acquire()
             if self.__current_progress >= 100:
                 print('')
@@ -194,14 +192,3 @@ class ProgressBar(object):
             ProgressBar.__mutex.release()
 
 
-# Unit test for benchmark_run function
-
-# # Use a simulated exact match algorithm
-# dummy_algorithm = DummyAlgorithm()
-#
-# # Simulate initial memory usage
-# bytearray(64000)
-#
-# results = benchmark_run(dummy_algorithm, "ACCTCGATCCGATCG", ["ATTG", "CCA"], dummy_algorithm.get_name(), 5)
-#
-# print("\n" + str(results))

@@ -4,27 +4,38 @@ from suffix_array import SuffixArray
 from suffix_tree import SuffixTree
 from benchmark import benchmark_run
 import os
-import sys
-
 from pathlib import Path
+from config import *
+from diagram import *
+import ntpath
+import gc
 
-num_of_repeats = 1
+algorithms = [IndexHash(), IndexSorted(), SuffixArray(), SuffixTree()]
+
+tests_dir = Path(performance_tests_dir_path)
+tests_results_dir = Path(performance_tests_results_dir)
+test_files = []
+
 
 def rstrip(line):
     return line.rstrip('\n')
 
 
-#algorithms = [IndexHash(), IndexSorted(), SuffixArray(), SuffixTree()]
-algorithms = [IndexSorted()]
+def print_separator():
+    print('-' * 100)
 
-tests_dir = Path("Tests/Performance/")
-tests_results_dir = Path("Tests/Results/")
-test_files = []
 
 for file in os.listdir(tests_dir):
     test_files.append(tests_dir / file)
 
 for test_file_name in test_files:
+
+    test_file_name_short = ntpath.basename(test_file_name)
+
+    print("")
+    print_separator()
+    print("Test file: " + test_file_name_short)
+    print_separator()
 
     test_file = open(test_file_name, 'r')
     lines = test_file.readlines()
@@ -34,16 +45,19 @@ for test_file_name in test_files:
 
     index = test_files.index(test_file_name)
 
-    '''
-    if len(sys.argv) > 1:
-        algorithm_index = int(sys.argv[1])
-        print("Selected algorithm index: " + str(algorithm_index))
-        algorithms = [algorithms[algorithm_index]]
-    else:
-        print("Selected all algorithms")
-    '''
+    all_results = []
 
     for algorithm in algorithms:
         test_results_file_path = tests_results_dir / (algorithm.get_name() + str(index) + ".txt")
         test_results_file = open(test_results_file_path, "w+")
-        test_results_file.write(str(benchmark_run(algorithm, genome, patterns, algorithm.get_name(), num_of_repeats)))
+        result = benchmark_run(algorithm, genome, patterns, algorithm.get_name(),num_of_test_iterations)
+        all_results.append(result)
+        test_results_file.write(str(result))
+        gc.collect()
+
+    print("")
+    print_separator()
+    plot_add_results(all_results, test_file_name_short)
+
+print_separator()
+plot_show()
