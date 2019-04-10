@@ -154,7 +154,7 @@ class SuffixTree(AlgorithmWithIndexStructure):
 
         init_progress = ProgressBar(self.size, "Building suffix tree...")
 
-        for i in range(self.size):
+        for i in (index for index in range(self.size)):
             init_progress.update_progress(i)
             self.extend_suffix_tree(i)
 
@@ -162,7 +162,8 @@ class SuffixTree(AlgorithmWithIndexStructure):
 
     def traverse(self, node, sub_string):
         if sub_string:
-            item = next(((char, child) for char, child in node.children.items() if sub_string.startswith(char)), None)
+
+            item = next(((char, child) for char, child in node.children.items() if sub_string[0] == char), None)
 
             if item:
                 char, child = item

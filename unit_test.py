@@ -4,8 +4,9 @@ from index_hash import IndexHash
 from index_sorted import IndexSorted
 from suffix_array import SuffixArray
 from suffix_tree import SuffixTree
+from config import *
 
-unit_tests_dir = Path("Tests/Unit/")
+unit_tests_dir = Path(unit_tests_dir_path)
 
 
 class UnitTestResult(object):
