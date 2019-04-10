@@ -231,7 +231,7 @@ class SuffixTree(AlgorithmWithIndexStructure):
 
         init_progress = ProgressBar(self.size, "Building suffix tree...")
 
-        for i in range(self.size):
+        for i in (index for index in range(self.size)):
             init_progress.update_progress(i)
             self.extend_suffix_tree(i)
 
@@ -241,7 +241,7 @@ class SuffixTree(AlgorithmWithIndexStructure):
         if sub_string:
             # Since each child starts with a unique character we will pursue the process for the child that sub-string
             # Starts with the first character of this edge
-            item = next(((char, child) for char, child in node.children.items() if sub_string.startswith(char)), None)
+            item = next(((char, child) for char, child in node.children.items() if sub_string[0] == char), None)
 
             if item:
                 char, child = item
