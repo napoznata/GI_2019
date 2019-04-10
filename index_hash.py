@@ -18,9 +18,9 @@ class IndexHash(AlgorithmWithIndexStructure):
         for i in range(len(self.__text)):
             substring = self.__text[i:i + IndexHash.__pattern_len]
             if substring in self.__index:
-                self.__index[substring].append(i)  # substring already in dictionary
+                self.__index[substring].append(i)
             else:
-                self.__index[substring] = [i]  # add to dictionary
+                self.__index[substring] = [i]
             init_progress.update_progress(i)
 
         init_progress.update_progress(len(self.__text))
@@ -37,7 +37,6 @@ class IndexHash(AlgorithmWithIndexStructure):
 
             results = []
 
-            # find offsets of each substring in pattern less or equal to default pattern length
             for i in range(0, len(pattern), IndexHash.__pattern_len):
                 query_progress.update_progress(i)
                 substring = pattern[i:i + IndexHash.__pattern_len]
@@ -45,7 +44,6 @@ class IndexHash(AlgorithmWithIndexStructure):
                     if i == 0:
                         results = list(self.__index[substring])
                     else:
-                        # check if current substring offset is immediately after the previous substring offset
                         results = list(filter(lambda x: (x + i) in self.__index[substring], results))
                 else:
                     if i == 0:
@@ -53,7 +51,6 @@ class IndexHash(AlgorithmWithIndexStructure):
                     else:
                         results = list(filter(lambda x: self.__text[(x + i):(x + i + len(substring))] == substring, results))
 
-                # return if there are no results
                 if len(results) == 0:
                     query_progress.update_progress(len(pattern))
                     break
