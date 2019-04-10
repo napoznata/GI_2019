@@ -1,8 +1,8 @@
 --------------------------------------------------------------
 IndexHash benchmark results 
 
-Used memory (bytes): 	5670735872
-Text init time: 		1520.2657661437988
-Total query time: 		721.4076142311096
-Total execution time: 	2241.6733803749084
+Used memory (bytes): 	2118299648
+Text init time: 		37.39348387718201
+Total query time: 		124.90977001190186
+Total execution time: 	162.30325388908386
 --------------------------------------------------------------
