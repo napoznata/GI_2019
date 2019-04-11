@@ -25,10 +25,10 @@ def print_separator():
     print('-' * 100)
 
 
-for file in os.listdir(tests_dir):
+for file in sorted(os.listdir(tests_dir)):
     test_files.append(tests_dir / file)
 
-for test_file_name in test_files:
+for test_file_name in test_files.__reversed__():
 
     test_file_name_short = ntpath.basename(test_file_name)
 
