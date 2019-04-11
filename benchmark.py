@@ -44,6 +44,9 @@ class BenchmarkResult(object):
         return self.__str__()
 
     def __str__(self):
+
+
+
         return "--------------------------------------------------------------"\
                "\n" + self.__algorithm_name + " benchmark results \n\n" \
                "Used memory (bytes): \t" + str(self.__used_memory) + "\n" + \
@@ -190,5 +193,3 @@ class ProgressBar(object):
                 print('' * 100, end='\r')
                 print('Progress: {:.2f}%'.format(self.__current_progress), end='')
             ProgressBar.__mutex.release()
-
-

@@ -105,3 +105,5 @@ venv.bak/
 
 #project files
 .idea/
+
+machine_signature.txt

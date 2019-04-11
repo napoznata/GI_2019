@@ -11,6 +11,9 @@ num_of_test_iterations = 3
 performance_tests_dir_path = "Tests/Performance/"
 performance_tests_results_dir = "Tests/Results/"
 
+signature_file_dir = "machine_signature.txt"
+
+
 # -------------------------------------------------- #
 # Unit testing
 unit_tests_dir_path = "Tests/Unit/"
