@@ -13,7 +13,6 @@ performance_tests_results_dir = "Tests/Results/"
 
 signature_file_dir = "machine_signature.txt"
 
-
 # -------------------------------------------------- #
 # Unit testing
 unit_tests_dir_path = "Tests/Unit/"
