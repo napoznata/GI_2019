@@ -23,5 +23,11 @@ Libraries that are used in this project are:
 - psutil
 
 # Usage
-To perform the benchmark tests, just run `main.py`.  
+
+To perform the benchmark tests:
+- Create a machine signature
+  - Add a file `machine_signature.txt` next to `main.py`
+  - Add one line describing the running machine (e.g. i7 16GB RAM 256GB SSD)
+- Optional: configure your settings in `config.py`
+- Run `main.py`  
 The results will be printed out in the console, written in Tests/Results/ directory and plotted in the diagrams.
