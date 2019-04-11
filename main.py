@@ -25,10 +25,10 @@ def print_separator():
     print('-' * 100)
 
 
-for file in os.listdir(tests_dir):
+for file in sorted(os.listdir(tests_dir)):
     test_files.append(tests_dir / file)
 
-for test_file_name in test_files:
+for test_file_name in test_files.__reversed__():
 
     test_file_name_short = ntpath.basename(test_file_name)
 
@@ -50,7 +50,7 @@ for test_file_name in test_files:
     for algorithm in algorithms:
         test_results_file_path = tests_results_dir / (algorithm.get_name() + str(index) + ".txt")
         test_results_file = open(test_results_file_path, "w+")
-        result = benchmark_run(algorithm, genome, patterns, algorithm.get_name(),num_of_test_iterations)
+        result = benchmark_run(algorithm, genome, patterns, algorithm.get_name(), num_of_test_iterations)
         all_results.append(result)
         test_results_file.write(str(result))
         gc.collect()
