@@ -9,6 +9,11 @@ from config import *
 from diagram import *
 import ntpath
 import gc
+import sys
+import resource
+
+sys.setrecursionlimit(5000)
+resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
 
 algorithms = [IndexHash(), IndexSorted(), SuffixArray(), SuffixTree()]
 
