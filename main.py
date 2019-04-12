@@ -16,6 +16,13 @@ tests_dir = Path(performance_tests_dir_path)
 tests_results_dir = Path(performance_tests_results_dir)
 test_files = []
 
+machine_signature = open(signature_file_dir).readline()
+if machine_signature == '':
+    print("Error: Machine signature file empty!")
+    print("Create and fill machine_signature.txt")
+    quit(-1)
+else:
+    print("Machine signature: " + machine_signature)
 
 def rstrip(line):
     return line.rstrip('\n')
@@ -50,7 +57,8 @@ for test_file_name in test_files.__reversed__():
     for algorithm in algorithms:
         test_results_file_path = tests_results_dir / (algorithm.get_name() + str(index) + ".txt")
         test_results_file = open(test_results_file_path, "w+")
-        result = benchmark_run(algorithm, genome, patterns, algorithm.get_name(), num_of_test_iterations)
+        result = benchmark_run(algorithm, test_file_name_short, machine_signature,
+                               genome, patterns, algorithm.get_name(), num_of_test_iterations)
         all_results.append(result)
         test_results_file.write(str(result))
         gc.collect()

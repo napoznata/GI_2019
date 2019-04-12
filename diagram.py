@@ -5,10 +5,10 @@ from benchmark import BenchmarkResult
 from config import *
 
 # Used for visualization testing
-dummy_results = [BenchmarkResult('Suffix Array', '', '', 180, 3600, 2700),
-                 BenchmarkResult('Suffix Tree', '', '', 200, 2500, 4000),
-                 BenchmarkResult('Index Hash', '', '', 300, 5000, 3500),
-                 BenchmarkResult('Index Sorted', '', '', 500, 6000, 1500)]
+dummy_results = [BenchmarkResult('Suffix Array', '', '',  '', '', 180, 3600, 2700),
+                 BenchmarkResult('Suffix Tree', '', '', '',  '', 200, 2500, 4000),
+                 BenchmarkResult('Index Hash', '', '', '',  '', 300, 5000, 3500),
+                 BenchmarkResult('Index Sorted', '', '', '',  '', 500, 6000, 1500)]
 
 num_of_algorithms = 4
 

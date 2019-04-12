@@ -7,17 +7,21 @@ import copy
 import gc
 import sys
 from config import *
+import datetime
 
 
 class BenchmarkResult(object):
 
-    def __init__(self, algorithm_name, text, pattern_set, init_time, patterns_query_time, used_memory):
+    def __init__(self, algorithm_name, file_name,
+                 signature, text, pattern_set, init_time, patterns_query_time, used_memory):
         self.__algorithm_name = algorithm_name
         self.__text = text
         self.__pattern_set = pattern_set
         self.__init_time = init_time
         self.__patterns_query_time = patterns_query_time
         self.__used_memory = used_memory
+        self.__file_name = file_name
+        self.__signature = signature
 
     def get_algorithm_name(self):
         return self.__algorithm_name
@@ -40,12 +44,20 @@ class BenchmarkResult(object):
     def get_memory_usage(self):
         return self.__used_memory
 
+    def get_file_name(self):
+        return self.__file_name
+
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
+
         return "--------------------------------------------------------------"\
-               "\n" + self.__algorithm_name + " benchmark results \n\n" \
+               "\n" + self.__algorithm_name + " benchmark results \n\n" + \
+               "Machine: " + self.__signature + "\n" + \
+               "Test file: " + self.__file_name + "\n" + \
+               "Timestamp: " + str(datetime.datetime.utcnow()) + "\n" + \
+               "--------------------------------------------------------------" + '\n' + \
                "Used memory (bytes): \t" + str(self.__used_memory) + "\n" + \
                "Text init time: \t\t" + str(self.__init_time) + "\n" + \
                "Total query time: \t\t" + str(self.__patterns_query_time) + "\n" \
@@ -121,7 +133,7 @@ class DummyAlgorithm(AlgorithmWithIndexStructure):
         time.sleep(1)
 
 
-def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor_resolution=0.01):
+def benchmark_run(algorithm, file_name, signature, text, patterns, title, iterations=1, memory_monitor_resolution=0.01):
 
     print("Running benchmark tests for " + title)
 
@@ -158,7 +170,7 @@ def benchmark_run(algorithm, text, patterns, title, iterations=1, memory_monitor
 
         del alg_object
 
-    return BenchmarkResult(title, text, patterns, min_init_time, min_total_query_time, min_memory_all)
+    return BenchmarkResult(title, file_name, signature, text, patterns, min_init_time, min_total_query_time, min_memory_all)
 
 
 class ProgressBar(object):
@@ -190,5 +202,3 @@ class ProgressBar(object):
                 print('' * 100, end='\r')
                 print('Progress: {:.2f}%'.format(self.__current_progress), end='')
             ProgressBar.__mutex.release()
-
-
