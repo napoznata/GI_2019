@@ -1,0 +1,9 @@
+Test file: 10093_ref_PAHARI_EIJ_v1.1_chrX.fa
+--------------------------------------------------------------
+IndexSorted benchmark results 
+
+Used memory (bytes): 	26617008128
+Text init time: 		2079.3326892852783
+Total query time: 		0.06140255928039551
+Total execution time: 	2079.3940918445587
+--------------------------------------------------------------

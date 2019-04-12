@@ -1,0 +1,9 @@
+Test file: 105023_ref_Nfu_20140520_chrsgr01.fa
+--------------------------------------------------------------
+IndexSorted benchmark results 
+
+Used memory (bytes): 	17537355776
+Text init time: 		1044.1571052074432
+Total query time: 		0.20175695419311523
+Total execution time: 	1044.3588621616364
+--------------------------------------------------------------

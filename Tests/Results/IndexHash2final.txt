@@ -1,0 +1,9 @@
+Test file: 13443_ref_Cara_1.0_chr1c.fa
+--------------------------------------------------------------
+IndexHash benchmark results 
+
+Used memory (bytes): 	2106896384
+Text init time: 		475.72593450546265
+Total query time: 		100.64042067527771
+Total execution time: 	576.3663551807404
+--------------------------------------------------------------
