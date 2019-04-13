@@ -1,0 +1,9 @@
+Tests/Performance/10093_ref_PAHARI_EIJ_v1.1_chrX.fa
+--------------------------------------------------------------
+SuffixTree benchmark results 
+
+Used memory (bytes): 	150839623680
+Text init time: 		9266.731631994247
+Total query time: 		0.2731513977050781
+Total execution time: 	9267.004783391953
+--------------------------------------------------------------
