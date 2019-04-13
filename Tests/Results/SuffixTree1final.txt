@@ -1,0 +1,9 @@
+Test file: 105023_ref_Nfu_20140520_chrsgr01.fa
+--------------------------------------------------------------
+SuffixTree benchmark results
+
+Used memory (bytes): 	73864790016
+Text init time: 		5853.8160746097565
+Total query time: 		0.36735963821411133
+Total execution time: 	5854.183434247971
+--------------------------------------------------------------
