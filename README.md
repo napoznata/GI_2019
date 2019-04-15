@@ -31,3 +31,6 @@ To perform the benchmark tests:
 - Optional: configure your settings in `config.py`
 - Run `main.py`  
 The results will be printed out in the console, written in Tests/Results/ directory and plotted in the diagrams.
+
+# Video presentation (in Serbian)
+https://youtu.be/kEoC46hgmW4
