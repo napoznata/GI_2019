@@ -34,10 +34,10 @@ The results will be printed out in the console, written in Tests/Results/ direct
 
 # Unit tests
 
-Each algorithm is tested using the input files located in the "Tests/Unit/" folder. Input files include the test file name, the genome and the patterns to search the genome for. The tests check edge cases which include:
+Each algorithm is tested using the input files located in the "Tests/Unit/" folder. Input files include the test file name, the genome, the patterns to search the genome for and their position in the genome. The tests check edge cases which include:
 - searching for an empty string
 - searching for a pattern not present in the genome
-- searching for patterns of different lengths (shorter than the index length for IndexSorted and IndexHash)
+- searching for patterns of different lengths (shorter and longer than the index length for IndexSorted and IndexHash)
 - searching for pattern at the end of the genome...
 
 Running the `unit_test.py` script performs the testing for all the genomes. The test results are shown in the console.
